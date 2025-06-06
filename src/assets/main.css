@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@theme {
+  --width-sidebar: 268px;
+}
+
+@utility w-sidebar {
+  width: var(--width-sidebar);
+}
