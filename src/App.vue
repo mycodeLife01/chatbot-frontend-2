@@ -1,9 +1,6 @@
 <template>
-  <!-- 这里改成router-view-->
-  <ChatLayout/>
+  <router-view />
 </template>
 
 <script setup>
-import ChatLayout from './layouts/ChatLayout.vue';
-
 </script>

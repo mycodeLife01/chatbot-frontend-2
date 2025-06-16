@@ -1,5 +1,5 @@
 <template>
     <div>
-        sidebar
+        header
     </div>
 </template>
