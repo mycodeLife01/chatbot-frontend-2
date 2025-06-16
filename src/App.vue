@@ -1,4 +1,5 @@
 <template>
+  <!-- 这里改成router-view-->
   <ChatLayout/>
 </template>
 

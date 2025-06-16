@@ -13,5 +13,12 @@ export function register(data) {
     url: "/users/register",
     method: "post",
     data,
+  })
+}
+
+export function getLoggedInUser() {
+  return request({
+    url: "/users/me",
+    method: "get",
   });
 }
