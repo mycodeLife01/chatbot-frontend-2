@@ -1,17 +1,18 @@
 <template>
-  <div class="flex h-screen w-screen">
-    <aside class="hidden md:block w-sidebar bg-gray-100">
-      <SideBar />
-    </aside>
-    <main class="w-full md:flex-1 flex flex-col">
-      <header class="bg-blue-300 h-14">
+  <div class="drawer lg:drawer-open h-screen drawer-auto-gutter">
+    <input id="chat-drawer" type="checkbox" class="drawer-toggle" />
+    <main class="drawer-content flex flex-col overflow-y-auto">
+      <header class="h-header flex justify-between items-center px-3 border-b border-gray-200">
         <Header />
       </header>
-      <div class="flex-1 bg-red-300">
-        <!-- 这里改成router-view-->
-        <router-view />
-      </div>
+      <router-view class="flex-1" />
     </main>
+    <div class="drawer-side">
+      <label for="chat-drawer" class="drawer-overlay"></label>
+      <aside class="w-sidebar bg-gray-50 min-h-full">
+        <SideBar />
+      </aside>
+    </div>
   </div>
 </template>
 

@@ -1,9 +1,32 @@
 @import "tailwindcss";
+@plugin "daisyui";
 
 @theme {
   --width-sidebar: 272px;
+  --height-header: 50px;
+  --height-input: 105px;
 }
 
 @utility w-sidebar {
   width: var(--width-sidebar);
+}
+
+@utility h-header {
+  height: var(--height-header);
+}
+
+@utility h-input {
+  height: var(--height-input);
+}
+
+@layer components {
+  html:has(.drawer-auto-gutter .drawer-toggle:checked) {
+    scrollbar-gutter: auto;
+  }
+}
+
+@layer utilities {
+  /* .drawer-side .drawer-overlay {
+    background-color: rgba(55, 65, 81, 0.5) !important;
+  } */
 }
