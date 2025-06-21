@@ -1,6 +1,6 @@
 <template>
-  <div class="drawer lg:drawer-open h-screen drawer-auto-gutter">
-    <input id="chat-drawer" type="checkbox" class="drawer-toggle" />
+  <div :class="drawerClasses">
+    <input id="chat-drawer" type="checkbox" class="drawer-toggle" v-model="isSidebarOpen" />
     <main class="drawer-content flex flex-col overflow-y-auto">
       <header class="h-header flex justify-between items-center px-3 border-b border-gray-200">
         <Header />
@@ -19,4 +19,19 @@
 <script setup>
 import SideBar from "@/components/SideBar.vue";
 import Header from "@/components/Header.vue";
+import { useThemeStore } from '@/stores/theme'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+
+const themeStore = useThemeStore()
+const { isSidebarOpen } = storeToRefs(themeStore)
+
+// 动态控制drawer类
+const drawerClasses = computed(() => [
+  'drawer',
+  'h-screen', 
+  'drawer-auto-gutter',
+  // 在大屏幕上，根据store状态决定是否显示sidebar
+  isSidebarOpen.value ? 'lg:drawer-open' : ''
+])
 </script>
