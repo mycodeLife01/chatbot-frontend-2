@@ -1,37 +1,35 @@
 <template>
-  <div :class="drawerClasses">
-    <input id="chat-drawer" type="checkbox" class="drawer-toggle" v-model="isSidebarOpen" />
-    <main class="drawer-content flex flex-col overflow-y-auto">
-      <header class="h-header flex justify-between items-center px-3 border-b border-gray-200">
-        <Header />
-      </header>
-      <router-view class="flex-1" />
-    </main>
-    <div class="drawer-side">
-      <label for="chat-drawer" class="drawer-overlay"></label>
-      <aside class="w-sidebar bg-gray-50 min-h-full">
-        <SideBar />
-      </aside>
-    </div>
+  <div>
+    <!-- 移动端布局 (lg以下) -->
+    <ChatLayoutMobile v-if="isMobile" />
+    <!-- 桌面端布局 (lg及以上) -->
+    <ChatLayoutDesktop v-else />
   </div>
 </template>
 
 <script setup>
-import SideBar from "@/components/SideBar.vue";
-import Header from "@/components/Header.vue";
+import ChatLayoutMobile from './ChatLayoutMobile.vue'
+import ChatLayoutDesktop from './ChatLayoutDesktop.vue'
+import { onMounted, onUnmounted } from 'vue'
 import { useThemeStore } from '@/stores/theme'
 import { storeToRefs } from 'pinia'
-import { computed } from 'vue'
-
 const themeStore = useThemeStore()
-const { isSidebarOpen } = storeToRefs(themeStore)
+// 仅将 state 属性转换为 ref
+const { isMobile } = storeToRefs(themeStore)
+// 从 store 直接获取 action 函数
+const { setIsMobile } = themeStore
+// 检查屏幕尺寸
+const checkScreenSize = () => {
+  // lg 断点通常是 1024px，根据你的 Tailwind 配置调整
+  setIsMobile(window.innerWidth < 1024)
+}
 
-// 动态控制drawer类
-const drawerClasses = computed(() => [
-  'drawer',
-  'h-screen', 
-  'drawer-auto-gutter',
-  // 在大屏幕上，根据store状态决定是否显示sidebar
-  isSidebarOpen.value ? 'lg:drawer-open' : ''
-])
+onMounted(() => {
+  checkScreenSize()
+  window.addEventListener('resize', checkScreenSize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkScreenSize)
+})
 </script>

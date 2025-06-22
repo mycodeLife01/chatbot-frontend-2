@@ -1,11 +1,11 @@
 <template>
-    <div class="flex flex-col gap-2 p-2">
+    <div class="flex flex-col gap-2 p-2 select-none">
         <ChatItem justify="between" class="mb-2" custom-class="hover:bg-transparent">
             <button>
                 <img src="@/assets/ailura.png" alt="ailura" class="w-8 h-8 rounded-full cursor-pointer">
             </button>
             <button @click="handleSidebar">
-                <PanelLeft :stroke-width="2" class="w-5 h-5 cursor-pointer hidden lg:block" />
+                <PanelLeft :stroke-width="1" class="w-5 h-5 cursor-pointer hidden lg:block" />
             </button>
         </ChatItem>
         <ChatItem>
