@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { computed } from "vue";
 
 export const useAuthStore = defineStore("user", () => {
-    const isLoggedIn = ref(localStorage.getItem("isLoggedIn") || false);
+    const isLoggedIn = ref(JSON.parse(localStorage.getItem("isLoggedIn")) || false);
     const user = ref(JSON.parse(localStorage.getItem("user")) || null);
     const token = ref(localStorage.getItem("chatbot-token") || "");
 

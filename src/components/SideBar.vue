@@ -4,7 +4,7 @@
             <button>
                 <img src="@/assets/ailura.png" alt="ailura" class="w-8 h-8 rounded-full cursor-pointer">
             </button>
-            <button @click="handleSidebar">
+            <button @click="handleSidebar" v-tooltip="{ content: '收起边栏', theme: 'sidebar-tooltip' }">
                 <PanelLeft :stroke-width="1" class="w-5 h-5 cursor-pointer hidden lg:block" />
             </button>
         </ChatItem>
@@ -50,4 +50,6 @@ const handleSidebar = () => {
 }
 </script>
 
-<style scoped></style>
+<style>
+
+</style>

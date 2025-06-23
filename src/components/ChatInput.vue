@@ -1,16 +1,16 @@
 <template>
     <div class="rounded-4xl w-[94%] h-auto min-h-[60px] border border-gray-300 shadow-sm 
-        lg:w-[800px] p-2 bg-white select-none">
+        lg:w-[750px] p-2 bg-white select-none">
         <textarea v-model="message" ref="ta" placeholder="询问任何问题" rows="1" @input="autoResize" class="p-2 w-full resize-none
             leading-6 text-md font-medium focus:outline-none bg-transparent"></textarea>
         <div class="mt-2 flex justify-between">
-            <div class="flex">
+            <div class="flex gap-1 items-center">
                 <button class="flex items-center justify-center w-8 h-8 cursor-pointer hover:bg-gray-100 rounded-3xl">
                     <Plus :stroke-width="1.8" class="w-5 h-5" />
                 </button>
                 <div class="flex items-center justify-evenly w-16 h-8 cursor-pointer hover:bg-gray-100 rounded-3xl">
                     <button>
-                        <Puzzle :stroke-width="1.8" class="w-5 h-5 " />
+                        <Puzzle :stroke-width="1.8" class="w-4 h-4 " />
                     </button>
                     <span class="text-sm">工具</span>
                 </div>

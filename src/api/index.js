@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // 根据运行环境配置不同的baseURL
-const baseURL = "http://47.116.194.240:8000/"
+const baseURL = "http://127.0.0.1:8000/"
 
 const service = axios.create({
   baseURL: baseURL,
