@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="h-screen">
     <!-- 移动端布局 (lg以下) -->
     <ChatLayoutMobile v-if="isMobile" />
     <!-- 桌面端布局 (lg及以上) -->
@@ -13,6 +13,9 @@ import ChatLayoutDesktop from './ChatLayoutDesktop.vue'
 import { onMounted, onUnmounted } from 'vue'
 import { useThemeStore } from '@/stores/theme'
 import { storeToRefs } from 'pinia'
+import useAuth from '@/composables/useAuth'
+import { useAuthStore } from '@/stores/user'
+
 const themeStore = useThemeStore()
 // 仅将 state 属性转换为 ref
 const { isMobile } = storeToRefs(themeStore)
@@ -31,5 +34,16 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', checkScreenSize)
+})
+onMounted(async () => {
+  const authStore = useAuthStore()
+  const { isLoggedIn } = storeToRefs(authStore)
+  if (isLoggedIn.value) {
+    console.log("1111");
+    const { getUser } = useAuth()
+    await getUser()
+  } else {
+    console.log("2222");
+  }
 })
 </script>

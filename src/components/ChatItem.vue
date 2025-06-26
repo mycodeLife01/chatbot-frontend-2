@@ -1,15 +1,16 @@
 <template>
   <div 
-    class="w-[95%] h-8 hover:bg-gray-200 rounded-xl p-2 flex items-center text-[14px] "
+    class="w-[95%] h-[37px] hover:bg-gray-200 rounded-xl p-2 flex items-center text-[14px] "
     :class="[justifyClass, customClass]"
   >
     <slot />
+    
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
-
+import { Ellipsis } from 'lucide-vue-next'
 const props = defineProps({
   justify: {
     type: String,

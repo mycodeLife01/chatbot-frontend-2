@@ -5,8 +5,9 @@ import { computed } from "vue";
 export const useAuthStore = defineStore("user", () => {
     const isLoggedIn = ref(JSON.parse(localStorage.getItem("isLoggedIn")) || false);
     const user = ref(JSON.parse(localStorage.getItem("user")) || null);
-    const token = ref(localStorage.getItem("chatbot-token") || "");
+    const token = ref(localStorage.getItem("token") || "");
 
+    const errorMsg = ref('')
     const welcomeMessage = computed(() => {
         return `Welcome, ${user.value.username}!`;
     })
@@ -19,6 +20,9 @@ export const useAuthStore = defineStore("user", () => {
     }
     const setIsLoggedIn = (isLoggedInFlag) => {
         isLoggedIn.value = isLoggedInFlag;
+    }
+    const setErrorMsg = (msg) => {
+        errorMsg.value = msg;
     }
     const logout = () => {
         isLoggedIn.value = false;
@@ -33,7 +37,9 @@ export const useAuthStore = defineStore("user", () => {
         setUser,
         setToken,
         setIsLoggedIn,
-        logout
+        logout,
+        errorMsg,
+        setErrorMsg
     }
 }, {
     persist: {

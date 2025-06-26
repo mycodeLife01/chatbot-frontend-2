@@ -3,7 +3,7 @@ import service from "./index";
 // 请求拦截器
 service.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = JSON.parse(localStorage.getItem("user")).token;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`; // 例如，通常是Bearer Token
     }

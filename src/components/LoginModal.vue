@@ -1,6 +1,6 @@
 <template>
     <!-- Modal Overlay -->
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" @click.self="$emit('closeLoginModal')">
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
         <!-- Modal Card -->
         <div class="relative w-full max-w-sm md:max-w-md bg-white rounded-2xl shadow-lg overflow-hidden">
             <!-- Header -->
@@ -12,16 +12,16 @@
             </div>
 
             <!-- Body -->
-            <form class="px-6 py-6 space-y-4" @submit.prevent="submitLogin">
+            <form class="px-6 py-6 space-y-4" @submit.prevent="doLogin">
                 <div>
                     <label class="block text-sm mb-1 text-gray-700">用户名</label>
-                    <input v-model="username" type="text" placeholder="请输入用户名"
+                    <input :disabled="loading" v-model="username" type="text" placeholder="请输入用户名"
                         class="w-full border border-gray-300 rounded-2xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black" />
                 </div>
 
                 <div>
                     <label class="block text-sm mb-1 text-gray-700">密码</label>
-                    <input v-model="password" type="password" placeholder="请输入密码"
+                    <input :disabled="loading" v-model="password" type="password" placeholder="请输入密码"
                         class="w-full border border-gray-300 rounded-2xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black" />
                 </div>
                 <button type="submit" :disabled="loading"
@@ -39,23 +39,35 @@
 <script setup>
 import { X } from 'lucide-vue-next'
 import useAuth from '@/composables/useAuth'
-import { ref } from 'vue'
-const { loginUser, registerUser, getUser } = useAuth()
+import { useAuthStore } from '@/stores/user'
+import { ref, onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+const { loginUser } = useAuth()
 const username = ref('')
 const password = ref('')
-const errorMsg = ref('')
 const loading = ref(false)
-const submitLogin = async () => {
+const emit = defineEmits(['closeLoginModal'])
+const { setErrorMsg } = useAuthStore()
+const { errorMsg } = storeToRefs(useAuthStore())
+const doLogin = async () => {
+    if (!username.value || !password.value) {
+        setErrorMsg('请输入用户名和密码')
+        return
+    }
     loading.value = true
-    const res = await loginUser({
+    const isLoginSuccess = await loginUser({
         username: username.value,
         password: password.value
     })
-    if (res) {
-        $emit('closeLoginModal')
-    } else {
-        errorMsg.value = '登录失败，请稍后再试'
+    if (isLoginSuccess) {
+        emit('closeLoginModal')
     }
-    loading.value = false
+    else {
+        loading.value = false
+        return
+    }
 }
+onMounted(() => {
+    setErrorMsg('')
+})
 </script>

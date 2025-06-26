@@ -10,10 +10,14 @@ export const useThemeStore = defineStore('theme', () => {
     const setIsMobile = (value) => {
         isMobile.value = value
     }
+    const setIsSidebarOpen = (value) => {
+        isSidebarOpen.value = value
+    }
     return {
         isSidebarOpen,
         isMobile,
         toggleSidebar,
-        setIsMobile
+        setIsMobile,
+        setIsSidebarOpen
     }
 })
