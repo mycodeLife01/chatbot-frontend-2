@@ -19,7 +19,7 @@
         <Header />
       </header>
       <main class="flex-1 overflow-y-auto ">
-        <router-view class="bg-red-200"/>
+        <router-view class=""/>
       </main>
     </div>
   </div>

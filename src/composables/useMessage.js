@@ -1,9 +1,8 @@
 import { getAllMessages } from "@/api/modules/message";
-
 export default function useMessage() {
-  const getMessages = async () => {
+  const getMessages = async (chatId) => {
     try {
-      const res = await getAllMessages();
+      const res = await getAllMessages({ chat_id: chatId });
       return res;
     } catch (error) {
       console.error(error);

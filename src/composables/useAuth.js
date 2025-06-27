@@ -51,10 +51,13 @@ export default function useAuth() {
     }
   };
   const logout = async () => {
-    authStore.setToken(null);
-    authStore.setIsLoggedIn(false);
-    authStore.setUser(null);
+    authStore.logout();
     themeStore.setIsSidebarOpen(false);
+    
+    // localStorage.removeItem("isLoggedIn");
+    // localStorage.removeItem("user");  
+    // localStorage.removeItem("token");
+    
     router.push("/");
   };
   return {

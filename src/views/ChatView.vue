@@ -2,54 +2,12 @@
     <div class="h-full flex flex-col">
         <!-- 聊天内容区域 -->
         <div class="flex-1 overflow-y-auto chat-scroll-area">
-            <div class="max-w-[94%] mx-auto p-4">
-                <div class="flex justify-end mb-4">
-                    <UserRequest>123</UserRequest>
+            <div v-for="message in messages" :key="message.message_id" class="max-w-[94%] lg:max-w-[780px] mx-auto p-4">
+                <div v-if="message.is_ai === 0" class="flex justify-end mb-4">
+                    <UserRequest>{{ message.message_content }}</UserRequest>
                 </div>
-                <div class="space-y-4">
-                    <ModelReply>
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                    </ModelReply>
-                    <ModelReply>
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                    </ModelReply>
-                    <ModelReply>
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                        是的，因为用了 absolute，ChatInput 和 BottomTip 已经
-                    </ModelReply>
-                    <!-- 测试更多消息 -->
-                    <ModelReply v-for="i in 18" :key="i">
-                        测试消息 {{ i }}：现在页面结构更简洁，减少了不必要的div嵌套。
-                    </ModelReply>
+                <div v-else>
+                    <ModelReply :content="message.message_content" />
                 </div>
             </div>
         </div>
@@ -57,7 +15,7 @@
         <!-- 输入区域 -->
         <div class="w-full flex-shrink-0 border-gray-200">
             <div class="w-full mx-auto p-2">
-                <ChatInput class="w-[98%] mx-auto" />
+                <ChatInput class="mx-auto" />
                 <BottomTip class="hidden lg:block text-center mt-2" />
             </div>
         </div>
@@ -67,14 +25,39 @@
 <script setup>
 import ChatInput from "@/components/ChatInput.vue";
 import BottomTip from "@/components/BottomTip.vue";
-import { useThemeStore } from '@/stores/theme'
-import { computed } from 'vue'
+import { watch, ref, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import UserRequest from "@/components/UserRequest.vue";
 import ModelReply from "@/components/ModelReply.vue";
+import useMessage from "@/composables/useMessage";
+import { useChatStore } from "@/stores/chat";
+import { useAuthStore } from "@/stores/user";
 
-const themeStore = useThemeStore()
-const { isSidebarOpen } = storeToRefs(themeStore)
+const chatStore = useChatStore()
+const { getMessages } = useMessage()
+const messages = ref([])
+const { selectedChatId } = storeToRefs(chatStore)
+const fetchMessages = async () => {
+    if (selectedChatId.value) {
+        const res = await getMessages(selectedChatId.value)
+        messages.value = res
+    }
+}
+watch(selectedChatId, async () => {
+    await fetchMessages()
+})
+onMounted(async () => {
+    await fetchMessages()
+})
+
+const authStore = useAuthStore()
+const { isLoggedIn } = storeToRefs(authStore)
+watch(isLoggedIn, () => {
+    if (!isLoggedIn.value) {
+        console.log('清空了');
+        messages.value = []
+    }
+})
 </script>
 
 <style scoped>
