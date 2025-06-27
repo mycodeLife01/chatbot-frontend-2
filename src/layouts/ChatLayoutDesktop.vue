@@ -8,7 +8,7 @@
       isSidebarOpen ? 'w-sidebar' : 'w-0'
     ]">
       <!-- 真正的侧边栏内容：固定宽度 + 绝对定位 -->
-      <div class="h-full absolute inset-0 w-sidebar bg-gray-50 border-r border-gray-200">
+      <div class="h-full absolute inset-0 w-sidebar bg-gray-100 border-r border-gray-200">
         <SideBar />
       </div>
     </aside>

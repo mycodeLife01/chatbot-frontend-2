@@ -3,9 +3,12 @@ import service from "./index";
 // 请求拦截器
 service.interceptors.request.use(
   (config) => {
-    const token = JSON.parse(localStorage.getItem("user")).token;
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`; // 例如，通常是Bearer Token
+    const user = localStorage.getItem("user");
+    if (user) {
+      const token = JSON.parse(user).token;
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`; // 例如，通常是Bearer Token
+      }
     }
     return config;
   },
