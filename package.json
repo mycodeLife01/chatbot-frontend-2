@@ -27,6 +27,7 @@
     "@tailwindcss/vite": "^4.1.8",
     "@vitejs/plugin-vue": "^5.2.3",
     "daisyui": "^5.0.43",
+    "tailwind-scrollbar": "^4.0.2",
     "tailwindcss": "^4.1.8",
     "vite": "^6.2.4",
     "vite-plugin-vue-devtools": "^7.7.2"

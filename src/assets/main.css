@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin "daisyui";
+@plugin 'tailwind-scrollbar';
 
 @theme {
   --width-sidebar: 272px;

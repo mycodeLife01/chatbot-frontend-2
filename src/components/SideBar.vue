@@ -10,7 +10,7 @@
                     <PanelLeft :stroke-width="1" class="w-5 h-5 cursor-pointer hidden lg:block" />
                 </button>
             </ChatItem>
-            <ChatItem>
+            <ChatItem @click="handleNewChat">
                 <PenLine :stroke-width="2" class="w-5 h-5" />
                 新聊天
             </ChatItem>
@@ -20,7 +20,10 @@
             </ChatItem>
         </div>
         <!-- 聊天记录区 -->
-        <div class="space-y-2 flex-auto">
+        <div class="space-y-2 flex-auto overflow-y-auto scrollbar-thin
+                    scrollbar-thumb-gray-400
+                    scrollbar-track-gray-100
+                    scrollbar-thumb-rounded-full">
             <ChatItem v-for="chat in chatHistory" :key="chat.chat_id"
                 :class="{ 'bg-gray-200': selectedChatId === chat.chat_id }" @click="selectChat(chat.chat_id)"
                 justify="between" custom-class="group">

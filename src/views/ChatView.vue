@@ -116,7 +116,7 @@ const handleSendSuccess = async (messageData) => {
                 } else if (typeof data === 'string') {
                     aiMessage.value.message_content += data
                 }
-                scrollToBottom()
+                // scrollToBottom() 注释是为了避免回复时用户无法滑动滚动条
             },
             (error) => {
                 console.error('AI回复失败:', error)
