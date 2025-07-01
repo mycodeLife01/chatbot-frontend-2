@@ -20,26 +20,29 @@
             </ChatItem>
         </div>
         <!-- 聊天记录区 -->
-        <div class="space-y-2 flex-auto overflow-y-auto scrollbar-thin
-                    scrollbar-thumb-gray-400
+        <div class="flex-auto overflow-y-auto scrollbar
+                    scrollbar-thumb-gray-300
                     scrollbar-track-gray-100
-                    scrollbar-thumb-rounded-full">
-            <ChatItem v-for="chat in chatHistory" :key="chat.chat_id"
-                :class="{ 'bg-gray-200': selectedChatId === chat.chat_id }" @click="selectChat(chat.chat_id)"
-                justify="between" custom-class="group">
-                {{ chat.chat_name }}
-                <div class="dropdown dropdown-end">
-                    <button class="flex items-center justify-center">
-                        <Ellipsis
-                            class="w-4 h-4 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                    </button>
-                    <ul tabindex="0"
-                        class="dropdown-content menu bg-base-100 rounded-2xl w-32 p-2 shadow-sm border border-gray-300">
-                        <li @click="doLogout"><a>删除对话</a></li>
-                        <li><a>修改</a></li>
-                    </ul>
-                </div>
-            </ChatItem>
+                    scrollbar-thumb-rounded-full -mr-2 pr-2">
+            <div class="space-y-2">
+                <ChatItem v-for="(chat, index) in chatHistory" :key="chat.chat_id"
+                    :class="{ 'bg-gray-200': selectedChatId === chat.chat_id }" @click="selectChat(chat.chat_id)"
+                    justify="between" custom-class="group">
+                    {{ chat.chat_name }}
+                    <div class="dropdown dropdown-end">
+                        <button class="flex items-center justify-center">
+                            <Ellipsis
+                                class="w-4 h-4 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                        </button>
+                        <ul tabindex="0" v-if="!(isShowUpdateChatModal || isShowDeleteChatModal)"
+                            class="dropdown-content menu bg-base-100 rounded-2xl w-32 p-2 shadow-sm border border-gray-300">
+                            <li><a @click="handleDeleteChat(index)">删除对话</a></li>
+                            <li><a @click="handleUpdateChatName(index)">修改</a>
+                            </li>
+                        </ul>
+                    </div>
+                </ChatItem>
+            </div>
         </div>
         <div class="p-2 flex-none border-t border-gray-200">
             <ChatItem>
@@ -59,11 +62,15 @@
             </ChatItem>
         </div>
     </div>
+    <UpdateChatModal v-if="isShowUpdateChatModal" @closeUpdateChatModal="isShowUpdateChatModal = false"
+        @onUpdateChatModal="doUpdateChatName" />
+    <DeleteChatModal v-if="isShowDeleteChatModal" @closeDeleteChatModal="isShowDeleteChatModal = false"
+        @onDeleteChatModal="doDeleteChat" />
 </template>
 
 <script setup>
 import ChatItem from './ChatItem.vue'
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, onUpdated, computed } from 'vue'
 import { PenLine, Search, PanelLeft, Ellipsis } from 'lucide-vue-next'
 import { useThemeStore } from '@/stores/theme'
 import { useChatStore } from '@/stores/chat'
@@ -72,7 +79,12 @@ import { storeToRefs } from 'pinia'
 import { Settings } from 'lucide-vue-next'
 import useAuth from '@/composables/useAuth'
 import { useAuthStore } from '@/stores/user'
+import UpdateChatModal from './UpdateChatModal.vue'
+import DeleteChatModal from './DeleteChatModal.vue'
+import { useMessageStore } from '@/stores/message'
+
 const { user, isLoggedIn } = storeToRefs(useAuthStore())
+
 // 模拟数据
 const chatHistory = ref([])
 // 侧边栏伸缩
@@ -80,7 +92,7 @@ const { toggleSidebar } = useThemeStore()
 const handleSidebar = () => {
     toggleSidebar()
 }
-const { loadHistoryChats } = useChat()
+const { loadHistoryChats, updateChatName, deleteChat } = useChat()
 const getChats = async () => {
     console.log('getChats');
     const res = await loadHistoryChats()
@@ -95,8 +107,14 @@ onMounted(async () => {
 watch(isLoggedIn, async () => {
     await getChats()
 })
-const { setSelectedChatId } = useChatStore()
-const { selectedChatId } = storeToRefs(useChatStore())
+const { setSelectedChatId, setIsReloading } = useChatStore()
+const { selectedChatId, isReloading } = storeToRefs(useChatStore())
+watch(isReloading, async (newVal) => {
+    if (newVal) {
+        await getChats()
+        setIsReloading(false)
+    }
+})
 const selectChat = (chat_id) => {
     setSelectedChatId(chat_id)
 }
@@ -104,6 +122,65 @@ const { logout } = useAuth()
 const doLogout = () => {
     logout()
 }
+const handleNewChat = () => {
+    setSelectedChatId(null)
+}
+
+//修改对话名
+const updateChatIndex = ref(null)
+const isShowUpdateChatModal = ref(false)
+const handleUpdateChatName = (index) => {
+    updateChatIndex.value = index
+    isShowUpdateChatModal.value = true
+}
+const doUpdateChatName = (newChatName) => {
+    chatHistory.value[updateChatIndex.value].chat_name = newChatName
+    isShowUpdateChatModal.value = false
+    chatNameOnUpdated.value = newChatName
+}
+// const chatNameOnUpdated = computed(() => {
+//     if (updateChatIndex.value !== null) {
+//         return chatHistory.value[updateChatIndex.value].chat_name
+//     }
+//     return ''
+// })
+const chatNameOnUpdated = ref('')
+onUpdated(() => {
+    watch(chatNameOnUpdated, (newVal) => {
+        console.log('调用了修改chat的api!');
+        updateChatName({ chat_id: chatHistory.value[updateChatIndex.value].chat_id, chat_name: newVal })
+    })
+})
+
+//删除对话
+const messageStore = useMessageStore()
+const { setIsMessageReloading } = messageStore
+const deletedChatIndex = ref(null)
+const isShowDeleteChatModal = ref(false)
+const handleDeleteChat = (index) => {
+    deletedChatIndex.value = index
+    isShowDeleteChatModal.value = true
+}
+const doDeleteChat = () => {
+    chatIdOnDeleted.value = chatHistory.value[deletedChatIndex.value].chat_id
+    chatHistory.value.splice(deletedChatIndex.value, 1)
+    isShowDeleteChatModal.value = false
+    setIsMessageReloading(true)
+}
+// const chatIdOnDeleted = computed(() => {
+//     if (deletedChatIndex.value !== null) {
+//         return chatHistory.value[deletedChatIndex.value].chat_id
+//     }
+//     return ''
+// })
+const chatIdOnDeleted = ref('')
+onUpdated(() => {
+    watch(chatIdOnDeleted, (newVal) => {
+        console.log(`调用了删除chat的api! chat_id:${newVal}`);
+        const res = deleteChat(newVal)
+        console.log(`删除了${res}条记录`);
+    })
+})
 </script>
 
 <style></style>

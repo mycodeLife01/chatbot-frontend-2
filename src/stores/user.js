@@ -9,7 +9,7 @@ export const useAuthStore = defineStore("user", () => {
 
     const errorMsg = ref('')
     const welcomeMessage = computed(() => {
-        return `欢迎来到Ailura, ${user.value.username}!`;
+        return user.value ? `你好, ${user.value.username}。` : '请登录以使用';
     })
 
     const setUser = (userInfo) => {

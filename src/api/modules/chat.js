@@ -24,10 +24,9 @@ export function updateChat(data) {
   });
 }
 
-export function deleteChat(params) {
+export function removeChat(param) {
   return request({
-    url: "/chats/remove",
+    url: `/chats/remove/${param}`,
     method: "delete",
-    params,
   });
 }

@@ -34,6 +34,6 @@ const isMobileSidebarOpen = computed(() => {
 const drawerClasses = computed(() => [
   'drawer',
   'h-full',
-  'drawer-auto-gutter'
+  'drawer-auto-gutter',
 ])
 </script>
